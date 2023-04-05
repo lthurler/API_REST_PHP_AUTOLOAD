@@ -5,7 +5,7 @@ ini_set("display_errors", 1);
 ini_set("display_startup_errors", 1);
 
 define('HOST', 'localhost');
-define('USER', 'root');
+define('USUARIO', 'root');
 define('SENHA', '');
 define('PORT', '3306');
 define('BANCO', 'api');

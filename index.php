@@ -2,6 +2,7 @@
 
 use Util\RotasUtil;
 use Validator\RequestValidator;
+use Util\ConstantesGenericasUtil;
 
 require_once 'bootstrap.php';
 
@@ -12,7 +13,10 @@ try {
 
 } catch (Exception $exception)
 {
-    echo $exception->getMessage();
+    echo json_encode([
+        ConstantesGenericasUtil::TIPO => ConstantesGenericasUtil::TIPO_ERRO,
+        ConstantesGenericasUtil::RESPOSTA => utf8_encode($exception->getMessage())
+    ]);
+    exit;
 }
-
 ?>
