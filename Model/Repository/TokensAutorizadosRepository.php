@@ -34,8 +34,7 @@ class TokensAutorizadosRepository
             {
                 header('HTTP/1.1 401 Unautorized');
                 throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_TOKEN_NAO_AUTORIZADO);
-            }
-            echo 'token Autorizado';
+            }            
 
         } else 
         {
@@ -47,6 +46,5 @@ class TokensAutorizadosRepository
     {
         return $this->MySQL;
     }
-
 }
 ?>
