@@ -12,12 +12,13 @@ class UsuariosService
 {
     private array $dados;
     private object $UsuariosRepository;
-    private array $dadosCorpoRequest = [];
+    private array $dadosCorpoRequest;
 
     public const TABELA = 'usuarios';
     public const RECURSOS_GET = ['listar'];
     public const RECURSOS_DELETE = ['deletar'];
     public const RECURSOS_POST = ['cadastrar'];
+    public const RECURSOS_PUT = ['atualizar'];
 
     
     public function __construct($dados = [])
@@ -40,10 +41,7 @@ class UsuariosService
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
         }
 
-        if ($retorno === null)
-        {
-            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
-        }
+        $this->validarRetornoRequest($retorno);
 
         return $retorno;
 
@@ -56,24 +54,14 @@ class UsuariosService
         
         if(in_array($recurso, self::RECURSOS_DELETE, true))
         {
-            if($this->dados['id'] > 0)
-            {
-                $retorno = $this->$recurso();
-
-            } else 
-            {
-                throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_ID_OBRIGATORIO);        
-            }
+            $retorno = $this->validarIdObrigatorio($recurso);
 
         } else 
         {
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
         }
 
-        if ($retorno === null)
-        {
-            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
-        }
+        $this->validarRetornoRequest($retorno);
 
         return $retorno;
 
@@ -93,10 +81,27 @@ class UsuariosService
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
         }
 
-        if ($retorno === null)
+       $this->validarRetornoRequest($retorno);
+
+        return $retorno;
+
+    }
+
+    public function validarPut()
+    {
+        $retorno = null;
+        $recurso = $this->dados['recurso'];
+        
+        if(in_array($recurso, self::RECURSOS_PUT, true))
         {
-            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
+            $retorno = $this->validarIdObrigatorio($recurso);
+
+        } else 
+        {
+            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
         }
+
+        $this->validarRetornoRequest($retorno);
 
         return $retorno;
 
@@ -143,5 +148,37 @@ class UsuariosService
         }
         throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_LOGIN_SENHA_OBRIGATORIO);
     }
+
+    private function atualizar()
+    {
+        if ($this->UsuariosRepository->updateUser($this->dados['id'], $this->dadosCorpoRequest) > 0)
+        {
+            $this->UsuariosRepository->getMySQL()->getDb()->commit();
+            return ConstantesGenericasUtil::MSG_ATUALIZADO_SUCESSO;            
+        }
+
+        $this->UsuariosRepository->getMySQL()->getDb()->rollBack();
+        throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_NAO_AFETADO);
+    }
+
+    private function validarRetornoRequest($retorno): void
+    {
+        if ($retorno === null)
+        {
+            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
+        }
+    }
+
+    private function validarIdObrigatorio($recurso)
+    {
+        if($this->dados['id'] > 0)
+            {
+                $retorno = $this->$recurso();
+
+            } else 
+            {
+                throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_ID_OBRIGATORIO);        
+            }
+            return $retorno;
+    }
 }
-?>

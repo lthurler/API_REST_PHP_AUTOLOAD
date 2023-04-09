@@ -22,10 +22,12 @@ class RequestValidator
     const USUARIOS = 'USUARIOS';
 
 
+
     public function __construct($request)
     {
         $this->TokensAutorizadosRepository = new TokensAutorizadosRepository();
         $this->request = $request;
+        $this->dadosRequest = array();
     }
 
     public function processarRequest()
@@ -114,6 +116,25 @@ class RequestValidator
 
     }
 
+    private function put()
+    {
+        $retorno = utf8_encode(ConstantesGenericasUtil::MSG_ERRO_TIPO_ROTA);
 
+        if (in_array($this->request['rota'], ConstantesGenericasUtil::TIPO_PUT, true))
+        {
+            switch ($this->request['rota'])
+            {
+                case self::USUARIOS:
+                    $UsuariosService = new UsuariosService($this->request);
+                    $UsuariosService->setDadosCorpoRequest($this->dadosRequest);
+                    $retorno = $UsuariosService->validarPut();
+                    break;
+                default:
+                    throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
+            }
+        }
+        return $retorno;
+
+    }
 }
 ?>

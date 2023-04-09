@@ -11,17 +11,12 @@ class MySQL
 {
     private object $db;
 
-    /**
-     * MySQL constructor.
-     */
+ 
     public function __construct()
     {
         $this->db = $this->setDB();
     }
 
-    /**
-     * @return PDO
-     */
     public function setDB()
     {
         try {
@@ -33,11 +28,6 @@ class MySQL
         }
     }
 
-    /**
-     * @param $tabela
-     * @param $id
-     * @return string
-     */
     public function delete($tabela, $id)
     {
         $consultaDelete = 'DELETE FROM ' . $tabela . ' WHERE id = :id';
@@ -56,10 +46,6 @@ class MySQL
         throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
     }
 
-    /**
-     * @param $tabela
-     * @return array
-     */
     public function getAll($tabela)
     {
         if ($tabela) {
@@ -73,11 +59,6 @@ class MySQL
         throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_SEM_RETORNO);
     }
 
-    /**
-     * @param $tabela
-     * @param $id
-     * @return mixed
-     */
     public function getOneByKey($tabela, $id)
     {
         if ($tabela && $id) {
@@ -94,10 +75,7 @@ class MySQL
 
         throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_ID_OBRIGATORIO);
     }
-
-    /**
-     * @return object|PDO
-     */
+ 
     public function getDb()
     {
         return $this->db;
